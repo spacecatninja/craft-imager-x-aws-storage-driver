@@ -13,7 +13,7 @@
         "s3"
     ],
     "support": {
-        "docs": "https://github.com/spacecatninja/craft-imager-x-aws-storage-driver/blob/master/README.md",
+        "docs": "https://github.com/spacecatninja/craft-imager-x-aws-storage-driver/blob/main/README.md",
         "issues": "https://github.com/spacecatninja/craft-imager-x-aws-storage-driver/issues"
     },
     "license": "MIT",
@@ -39,7 +39,7 @@
         "handle": "imager-x-aws-storage-driver",
         "hasCpSettings": false,
         "hasCpSection": false,
-        "changelogUrl": "https://raw.githubusercontent.com/spacecatninja/craft-imager-x-aws-storage-driver/master/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/spacecatninja/craft-imager-x-aws-storage-driver/main/CHANGELOG.md",
         "class": "spacecatninja\\imagerxawsstoragedriver\\ImagerXAWSStorageDriver"
     }
 }
