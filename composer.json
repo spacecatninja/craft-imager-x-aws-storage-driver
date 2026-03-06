@@ -1,0 +1,45 @@
+{
+    "name": "spacecatninja/imager-x-aws-storage-driver",
+    "description": "External storage driver for Imager X that integrates with AWS (S3)",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "imager-x",
+        "aws",
+        "s3"
+    ],
+    "support": {
+        "docs": "https://github.com/spacecatninja/craft-imager-x-aws-storage-driver/blob/master/README.md",
+        "issues": "https://github.com/spacecatninja/craft-imager-x-aws-storage-driver/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "SPACECATNINJA",
+            "homepage": "https://www.spacecat.ninja"
+        }
+    ],
+    "require": {
+        "php": "^8.0",        
+        "craftcms/cms": "^5.0.0",
+        "spacecatninja/imager-x": "^6.0.0-beta",
+        "aws/aws-sdk-php": "^3.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "spacecatninja\\imagerxawsstoragedriver\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Imager X Storage Driver for AWS (S3)",
+        "handle": "imager-x-aws-storage-driver",
+        "hasCpSettings": false,
+        "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/spacecatninja/craft-imager-x-aws-storage-driver/master/CHANGELOG.md",
+        "class": "spacecatninja\\imagerxawsstoragedriver\\ImagerXAWSStorageDriver"
+    }
+}
