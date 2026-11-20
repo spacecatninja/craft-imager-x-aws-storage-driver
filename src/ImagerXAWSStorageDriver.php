@@ -8,9 +8,9 @@
 
 namespace SpaceCatNinja\ImagerXAWSStorageDriver;
 
-use craft\base\Plugin;
+use CraftCms\Cms\Plugin\Plugin;
+use SpaceCatNinja\ImagerX\ExternalStorage\ExternalStorages;
 use SpaceCatNinja\ImagerXAWSStorageDriver\ExternalStorage\AWSStorage;
-use yii\base\Event;
 
 /**
  * @author    SpaceCatNinja
@@ -20,15 +20,9 @@ use yii\base\Event;
  */
 class ImagerXAWSStorageDriver extends Plugin
 {
-    public function init(): void
+    public function boot(ExternalStorages $storages): void
     {
-        parent::init();
-        
-        Event::on(\spacecatninja\imagerx\ImagerX::class,
-            \spacecatninja\imagerx\ImagerX::EVENT_REGISTER_EXTERNAL_STORAGES,
-            static function(\spacecatninja\imagerx\events\RegisterExternalStoragesEvent $event) {
-                $event->storages['aws'] = AWSStorage::class;
-            }
-        );
+        // Register external storage in Imager X
+        $storages->register('aws', AWSStorage::class);
     }
 }

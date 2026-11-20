@@ -16,12 +16,13 @@ use Aws\Credentials\Credentials;
 use Aws\Handler\Guzzle\GuzzleHandler;
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
-use Craft;
-use craft\helpers\App;
-use craft\helpers\FileHelper;
-
-use spacecatninja\imagerx\externalstorage\ImagerStorageInterface;
-use spacecatninja\imagerx\services\ImagerService;
+use CraftCms\Cms\Support\Env;
+use CraftCms\Cms\Support\File;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use SpaceCatNinja\ImagerX\ExternalStorage\ImagerStorageInterface;
+use SpaceCatNinja\ImagerX\Services\ImagerService;
 
 class AWSStorage implements ImagerStorageInterface
 {
@@ -37,12 +38,12 @@ class AWSStorage implements ImagerStorageInterface
         try {
             $s3 = new S3Client($clientConfig);
         } catch (\InvalidArgumentException $invalidArgumentException) {
-            Craft::error('Invalid configuration of S3 Client: ' . $invalidArgumentException->getMessage(), __METHOD__);
+            Log::error('Invalid configuration of S3 Client: ' . $invalidArgumentException->getMessage());
             return false;
         }
 
         if (isset($settings['folder']) && $settings['folder'] !== '') {
-            $uri = FileHelper::normalizePath($settings['folder'] . '/' . $uri);
+            $uri = File::normalizePath($settings['folder'] . '/' . $uri);
         }
 
         // Always use forward slashes for S3
@@ -64,7 +65,7 @@ class AWSStorage implements ImagerStorageInterface
         }
 
         $opts = array_merge($opts, [
-            'Bucket' => App::parseEnv($settings['bucket']),
+            'Bucket' => Env::parse($settings['bucket']),
             'Key' => $uri,
             'Body' => fopen($file, 'rb'),
             'StorageClass' => self::getAWSStorageClass($settings['storageType'] ?? 'standard'),
@@ -73,7 +74,7 @@ class AWSStorage implements ImagerStorageInterface
         try {
             $s3->putObject($opts);
         } catch (S3Exception $s3Exception) {
-            Craft::error('An error occured while uploading to Amazon S3: ' . $s3Exception->getMessage(), __METHOD__);
+            Log::error('An error occured while uploading to Amazon S3: ' . $s3Exception->getMessage());
             return false;
         }
 
@@ -82,7 +83,7 @@ class AWSStorage implements ImagerStorageInterface
             try {
                 $cloudfront = new CloudFrontClient($clientConfig);
             } catch (\InvalidArgumentException $s3Exception) {
-                Craft::error('Invalid configuration of CloudFront Client: ' . $s3Exception->getMessage(), __METHOD__);
+                Log::error('Invalid configuration of CloudFront Client: ' . $s3Exception->getMessage());
                 return false;
             }
 
@@ -98,7 +99,7 @@ class AWSStorage implements ImagerStorageInterface
                     ],
                 ]);
             } catch (CloudFrontException $cloudFrontException) {
-                Craft::error('An error occured while sending an Cloudfront invalidation request: ' . $cloudFrontException->getMessage(), __METHOD__);
+                Log::error('An error occured while sending an Cloudfront invalidation request: ' . $cloudFrontException->getMessage());
             }
         }
 
@@ -112,28 +113,30 @@ class AWSStorage implements ImagerStorageInterface
      * @param array $settings
      *
      * @return array
-     * @throws \yii\base\Exception
      */
     public static function buildConfigArray(array $settings): array
     {
         $config = [
-            'region' => App::parseEnv($settings['region']),
+            'region' => Env::parse($settings['region']),
             'version' => 'latest',
         ];
 
-        $client = Craft::createGuzzleClient();
+        // Use Craft's HTTP client settings (config/craft/guzzle.php and httpProxy). Guzzle's http_errors must stay on,
+        // since the AWS SDK only turns error responses into exceptions when Guzzle rejects them.
+        $request = Http::create();
+        $client = new Client(['handler' => $request->buildHandlerStack(), 'http_errors' => true] + $request->getOptions());
         $config['http_handler'] = new GuzzleHandler($client);
 
         if (isset($settings['useCredentialLessAuth']) && $settings['useCredentialLessAuth'] === true) {
             // Check for predefined access
-            if (App::env('AWS_WEB_IDENTITY_TOKEN_FILE') && App::env('AWS_ROLE_ARN')) {
+            if (Env::get('AWS_WEB_IDENTITY_TOKEN_FILE') && Env::get('AWS_ROLE_ARN')) {
                 // Check if anything is defined for a web identity provider (see: https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/guide_credentials_provider.html#assume-role-with-web-identity-provider)
                 $provider = CredentialProvider::assumeRoleWithWebIdentityCredentialProvider();
                 $provider = CredentialProvider::memoize($provider);
                 $config['credentials'] = $provider;
             }
             // Check if running on ECS
-            if (App::env('AWS_CONTAINER_CREDENTIALS_RELATIVE_URI')) {
+            if (Env::get('AWS_CONTAINER_CREDENTIALS_RELATIVE_URI')) {
                 // Check if anything is defined for an ecsCredentials provider
                 $provider = CredentialProvider::ecsCredentials();
                 $provider = CredentialProvider::memoize($provider);
@@ -142,7 +145,7 @@ class AWSStorage implements ImagerStorageInterface
 
             // If that didn't happen, assume we're running on EC2, and we have an IAM role assigned so no action required.
         } else {
-            $credentials = new Credentials(App::parseEnv($settings['accessKey']), App::parseEnv($settings['secretAccessKey']));
+            $credentials = new Credentials(Env::parse($settings['accessKey']), Env::parse($settings['secretAccessKey']));
             $config['credentials'] = $credentials;
         }
 

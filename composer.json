@@ -24,9 +24,9 @@
         }
     ],
     "require": {
-        "php": "^8.0",        
-        "craftcms/cms": "^5.0.0",
-        "spacecatninja/imager-x": "^6.0.0",
+        "php": "^8.5",
+        "craftcms/cms": "^6.0.0-alpha",
+        "spacecatninja/imager-x": "^7.0.0-beta.2",
         "aws/aws-sdk-php": "^3.342.6"
     },
     "autoload": {
@@ -38,7 +38,6 @@
         "name": "Imager X Storage Driver for AWS (S3)",
         "handle": "imager-x-aws-storage-driver",
         "hasCpSettings": false,
-        "hasCpSection": false,
         "changelogUrl": "https://raw.githubusercontent.com/spacecatninja/craft-imager-x-aws-storage-driver/main/CHANGELOG.md",
         "class": "SpaceCatNinja\\ImagerXAWSStorageDriver\\ImagerXAWSStorageDriver"
     }
