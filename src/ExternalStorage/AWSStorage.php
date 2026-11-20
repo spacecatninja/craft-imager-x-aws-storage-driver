@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2026 André Elvan
  */
 
-namespace spacecatninja\imagerxawsstoragedriver\externalstorage;
+namespace SpaceCatNinja\ImagerXAWSStorageDriver\ExternalStorage;
 
 use Aws\CloudFront\CloudFrontClient;
 use Aws\CloudFront\Exception\CloudFrontException;

@@ -6,10 +6,10 @@
  * @copyright Copyright (c) 2026 André Elvan
  */
 
-namespace spacecatninja\imagerxawsstoragedriver;
+namespace SpaceCatNinja\ImagerXAWSStorageDriver;
 
 use craft\base\Plugin;
-use spacecatninja\imagerxawsstoragedriver\externalstorage\AWSStorage;
+use SpaceCatNinja\ImagerXAWSStorageDriver\ExternalStorage\AWSStorage;
 use yii\base\Event;
 
 /**

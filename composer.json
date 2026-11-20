@@ -31,7 +31,7 @@
     },
     "autoload": {
         "psr-4": {
-          "spacecatninja\\imagerxawsstoragedriver\\": "src/"
+            "SpaceCatNinja\\ImagerXAWSStorageDriver\\": "src/"
         }
     },
     "extra": {
@@ -40,6 +40,6 @@
         "hasCpSettings": false,
         "hasCpSection": false,
         "changelogUrl": "https://raw.githubusercontent.com/spacecatninja/craft-imager-x-aws-storage-driver/main/CHANGELOG.md",
-        "class": "spacecatninja\\imagerxawsstoragedriver\\ImagerXAWSStorageDriver"
+        "class": "SpaceCatNinja\\ImagerXAWSStorageDriver\\ImagerXAWSStorageDriver"
     }
 }
