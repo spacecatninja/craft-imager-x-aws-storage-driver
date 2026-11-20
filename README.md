@@ -4,19 +4,22 @@ External storage driver for [Imager X](https://plugins.craftcms.com/imager-x) th
 
 ## Requirements
 
-- Craft CMS 5.0.0 or later
-- Imager X 6.0.0 or later (Pro edition)
+- Craft CMS 6.0.0 or later
+- Imager X 7.0.0-beta.2 or later (Pro edition)
+- PHP 8.5 or later
+
+Version 1.x of this plugin supports Craft CMS 5 and Imager X 6. See [UPGRADE.md](UPGRADE.md) when moving to Craft 6.
 
 ## Installation
 
 ```bash
 composer require spacecatninja/imager-x-aws-storage-driver
-php craft plugin/install imager-x-aws-storage-driver
+php artisan craft:plugin:install imager-x-aws-storage-driver
 ```
 
 ## Configuration
 
-Add an `aws` key to `storageConfig` in your `config/imager-x.php`:
+Add an `aws` key to `storageConfig` in your `config/craft/imager-x.php`:
 
 ```php
 'storages' => ['aws'],
@@ -46,13 +49,15 @@ Point `imagerUrl` at your bucket (or CloudFront distribution):
 
 Always flush your Imager transforms cache when adding or removing external storages, as existing cached transforms will not be re-uploaded.
 
+Requests to AWS use Craft's HTTP client settings: the options in `config/craft/guzzle.php` and Craft's `httpProxy` setting. A request times out after 30 seconds, and after 10 seconds when connecting, unless `config/craft/guzzle.php` sets `timeout` or `connect_timeout`.
+
 ## Configuration options
 
 | Option | Default | Description |
 |---|---|---|
 | `accessKey` | `''` | AWS access key ID. Supports environment variables (e.g. `$AWS_ACCESS_KEY`). |
 | `secretAccessKey` | `''` | AWS secret access key. Supports environment variables. |
-| `region` | `''` | AWS region (e.g. `eu-west-1`). |
+| `region` | `''` | AWS region (e.g. `eu-west-1`). Supports environment variables. |
 | `bucket` | `''` | S3 bucket name. Supports environment variables. |
 | `folder` | `''` | Folder prefix within the bucket. |
 | `storageType` | `'standard'` | S3 storage class. Accepts `standard`, `rrs` (Reduced Redundancy), or `glacier`. |
