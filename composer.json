@@ -2,7 +2,7 @@
     "name": "spacecatninja/imager-x-aws-storage-driver",
     "description": "External storage driver for Imager X that integrates with AWS (S3)",
     "type": "craft-plugin",
-    "version": "1.0.1",
+    "version": "2.0.0-beta.1",
     "keywords": [
         "craft",
         "cms",
